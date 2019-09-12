@@ -4,13 +4,14 @@
       <v-toolbar-title>口座開設</v-toolbar-title>
     </v-toolbar>
     <v-card-text>
-      <v-form>
+      <v-form v-model="valid"> 
         <v-select
           label="銀行"
           item-text="name"
           item-value="id"
           :items="banks"
           :value="bankId"
+          :rules="rules"
           @input="$store.commit('signin/bankId', $event)"
         />
         <v-select
@@ -19,18 +20,21 @@
           item-value="id"
           :items="branches(bankId)"
           :value="branchId"
+          :rules="rules"
           @input="$store.commit('signin/branchId', $event)"
         />
         <v-text-field
           label="ユーザーＩＤ"
           type="text"
           :value="user"
+          :rules="rules"
           @input="$store.commit('signin/user', $event)"
         />
         <v-text-field
           label="お名前"
           type="text"
           :value="name"
+          :rules="rules"
           @input="$store.commit('signin/name', $event)"
         />
         <v-text-field
@@ -43,7 +47,7 @@
     </v-card-text>
     <v-card-actions>
       <v-spacer />
-      <v-btn color="primary" @click="signin">口座開設</v-btn>
+      <v-btn :disabled="!valid" color="primary" @click="signin">口座開設</v-btn>
     </v-card-actions>
   </v-card>
 </template>
@@ -54,12 +58,20 @@ import { mapGetters } from "vuex";
 export default {
   layout: "login",
   data: () => ({
+    valid: false,
     passwordRules: [
-      v => v && v.length > 4 || "パスワードは4文字以上です",
+      v => !!v || "必須項目です",
+      v => v && v.length >= 4 || "パスワードは4文字以上です",
       v => /[0-9]/.test(v) || "パスワードは1文字以上数字を含みます",
     ],
+    rules: [
+      v => !!v || "必須項目です",
+    ]
   }),
   computed: {
+    accounts() {
+      return this.$store.getters["accounts/accounts"]("ALL");
+    },
     ...mapGetters("signin", [
       "bankId",
       "branchId",
@@ -74,8 +86,16 @@ export default {
   },
   methods: {
     async signin() {
-      await this.$store.dispatch("signin/signin");
-      this.$router.push("/");
+      if ((this.$store.getters["accounts/accounts"]("ALL").map(v => v.user)).includes(this.user)){
+        alert("IDが重複しています");
+      }
+      else if ((this.$store.getters["accounts/accounts"]("ALL").map(v => v.name)).includes(this.name)){
+        alert("すでに登録済みの名前です");
+      }
+      else { 
+        await this.$store.dispatch("signin/signin");
+        this.$router.push("/");
+      }
     },
   },
 };
