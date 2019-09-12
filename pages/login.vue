@@ -14,8 +14,16 @@
           :items="accounts"
           :rules="rules"
         />
-        <v-text-field v-model="user" label="ユーザーID"></v-text-field>
-        <v-text-field v-model="password" label="パスワード"></v-text-field>
+        <v-text-field 
+          v-model="user" 
+          label="ユーザーID"
+          :rules="Idrules"></v-text-field>
+
+        <v-text-field 
+          v-model="password" 
+          label="パスワード"
+          :rules="Passrules"></v-text-field>
+
       </v-form>
     </v-card-text>
     <v-card-actions>
@@ -41,6 +49,12 @@ export default {
       v => !!v || "必須項目です",
       // memo: 複数のルールを並べることができる。
     ],
+    Idrules: [
+      v => !!v || "必須項目です",
+    ],
+    Passrules: [
+      v => !!v || "必須項目です",
+    ]
   }),
   computed: {
     accounts() {
@@ -55,8 +69,17 @@ export default {
   },
   methods: {
     login() {
-      this.$store.dispatch("login/id", this.id);
-      this.$router.push("/");
+      if (this.account.user !== this.user){
+        alert("IDが間違っています");
+      }
+      else if(this.account.password !== md5(this.password)){
+        alert("パスワードが間違っています");
+      }
+      else {
+        this.$store.dispatch("login/id", this.id);
+        this.$router.push("/");  
+      }
+      
     },
   },
 };
