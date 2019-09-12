@@ -10,7 +10,10 @@
           label="金額"
           type="number"
           :value="amount"
-          :rules="[v => v < account.total - fee || '残高が不足しています']"
+          :rules="[v => !!v || '金額を入力してください',
+                    v => v < account.total - fee || '残高が不足しています',
+                    v => 0 < v || '正しい数字を入力してください',
+                    v => v < 1001 || '上限を超えています']"
           @input="$store.commit('transfer/amount', $event)"
         />
         <v-btn nuxt dark color="primary" :disabled="!valid" @click="transfer">
