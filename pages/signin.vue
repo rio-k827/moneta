@@ -56,6 +56,7 @@
 import { mapGetters } from "vuex";
 
 export default {
+  valid: false, 
   layout: "login",
   data: () => ({
     valid: false,
