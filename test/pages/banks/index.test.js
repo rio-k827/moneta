@@ -26,7 +26,7 @@ describe("pages/admin/banks/index.vue", () => {
                 edit: state => null,
               },
               actions: {
-                toggle: () => {},
+                edit: () => {},
               },
             },
           },
