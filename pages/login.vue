@@ -54,6 +54,8 @@ export default {
     ],
     Passrules: [
       v => !!v || "必須項目です",
+      v => v && v.length > 4 || "パスワードは4文字以上です",
+      v => /[0-9]/.test(v) || "パスワードは1文字以上数字を含みます",
     ]
   }),
   computed: {
