@@ -20,6 +20,7 @@
           :rules="Idrules"></v-text-field>
 
         <v-text-field 
+          type="password"
           v-model="password" 
           label="パスワード"
           :rules="Passrules"></v-text-field>
